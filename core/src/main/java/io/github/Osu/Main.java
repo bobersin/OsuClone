@@ -1,6 +1,7 @@
 package io.github.Osu;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -13,8 +14,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private MainMenu mainMenu;
-    SelectionMenu selectionMenu;
-    private FitViewport viewport;
+    public static SelectionMenu selectionMenu;
+    public static GameMenu gameMenu;
+    public static FitViewport viewport;
     private OrthographicCamera camera;
 
     @Override
@@ -22,9 +24,10 @@ public class Main extends ApplicationAdapter {
         camera = new OrthographicCamera();
         viewport = new FitViewport(1920, 1080, camera);
         batch = new SpriteBatch();
-        selectionMenu = new SelectionMenu(viewport);
-        mainMenu = new MainMenu(viewport, selectionMenu);
+        selectionMenu = new SelectionMenu();
+        mainMenu = new MainMenu();
         mainMenu.load();
+        gameMenu = new GameMenu();
     }
 
     @Override
@@ -38,8 +41,9 @@ public class Main extends ApplicationAdapter {
     }
 
     public void update() {
-        mainMenu.update();
-        selectionMenu.update();
+        float dt = Gdx.graphics.getDeltaTime();
+        mainMenu.update(dt);
+        selectionMenu.update(dt);
     }
 
     @Override

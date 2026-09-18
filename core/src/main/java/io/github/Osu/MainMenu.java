@@ -1,74 +1,74 @@
 package io.github.Osu;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 
-public class MainMenu {
-    private Texture osuLogoTexture;
-    private TextureRegion osuLogoRegion;
+import static io.github.Osu.Main.selectionMenu;
+import static io.github.Osu.Main.viewport;
 
-    private boolean active;
-    private FitViewport mainViewPort;
-    private Vector2 mouse;
+public class MainMenu extends Menu {
+    private final Button osuLogo;
+    private boolean logoClicked;
 
-    private Button playButton;
-    private Button exitButton;
 
-    public MainMenu(FitViewport viewport, SelectionMenu selectionMenu) {
-        osuLogoTexture = new Texture("Osulogo.png");
-        osuLogoRegion = new TextureRegion(osuLogoTexture);
-        mainViewPort = viewport;
+    private final Button playButton;
+    private final Button exitButton;
 
-        playButton = new Button(100, 850, 100, 50) {
+    public MainMenu() {
+        super();
+
+        int osuWidth = 500;
+        int osuHeight = 500;
+
+        double clickedX = (viewport.getWorldWidth() - osuWidth)/2.5;
+        double clickedY = (viewport.getWorldHeight() - osuHeight)/2;
+
+        int buttonHeight = 75;
+        int buttonWidth = osuWidth/3;
+        int buttonOffset = 75;
+
+        playButton = new Button((int) (clickedX + (double) osuWidth /2) + osuWidth/3, (int) (clickedY + (double) osuHeight /2) - buttonHeight/2 + buttonOffset, buttonWidth, buttonHeight) {
             @Override
             public void clicked() {
-                active = false;
+                if (!logoClicked) return;
+                unload();
                 selectionMenu.load();
             }
         };
 
-        exitButton = new Button(100, 700, 100, 50) {
+        exitButton = new Button((int) (clickedX + (double) osuWidth /2) + osuWidth/3, (int) (clickedY + (double) osuHeight /2) - buttonHeight/2 - buttonOffset, buttonWidth, buttonHeight) {
             @Override
             public void clicked() {
+                if (!logoClicked) return;
                 Gdx.app.exit();
+            }
+        };
+
+        osuLogo = new Button((int) ((viewport.getWorldWidth() - osuWidth)/2), (int) clickedY, osuWidth, osuHeight, "Osulogo.png") {
+            @Override
+            public void clicked() {
+                if (!logoClicked) super.changePosition((float) ((viewport.getWorldWidth() - osuWidth)/2.5), (viewport.getWorldHeight() - osuHeight)/2);
+                logoClicked = true;
             }
         };
     }
 
-    public void update() {
-        if (!active) {
-            return;
-        }
+    public void update(float dt) {
+        super.update(dt);
 
-        mouse = new Vector2(
-                Gdx.input.getX(),
-                Gdx.input.getY());
-        mainViewPort.unproject(mouse);
-        playButton.update(mouse);
-        exitButton.update(mouse);
+        playButton.update(dt, mouse);
+        exitButton.update(dt, mouse);
+        osuLogo.update(dt, mouse);
     }
 
     public void draw(SpriteBatch batch) {
-        if (!active) {
+        if (!isActive()) {
             return;
         }
-
         batch.begin();
-        batch.draw(osuLogoRegion, 100, 100, 500, 500);
-        batch.end();
         playButton.draw(batch);
         exitButton.draw(batch);
-    }
-
-    public void dispose() {
-        osuLogoTexture.dispose();
-    }
-
-    public void load() {
-        active = true;
+        osuLogo.draw(batch);
+        batch.end();
     }
 }

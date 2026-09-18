@@ -12,7 +12,7 @@ import java.util.zip.ZipFile;
 
 public class Song {
 
-    private Map<String, HashMap<String, String>> values;
+    private final Map<String, HashMap<String, String>> values;
 
     public Song(ZipFile zipFile, ZipEntry entry) {
         values = new HashMap<>();
@@ -51,11 +51,7 @@ public class Song {
                         break;
                 }
             }
-        }  catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.print(values);
+        }  catch (IOException ignored) {}
     }
 
     public String getValue(String key, String value) {

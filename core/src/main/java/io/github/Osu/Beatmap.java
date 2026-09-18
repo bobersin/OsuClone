@@ -9,8 +9,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class Beatmap {
-    private String filepath;
-    private Song[] songs;
+    private final String filepath;
+    private final Song[] songs;
 
     public Beatmap(String file) {
         filepath = file;
@@ -26,14 +26,16 @@ public class Beatmap {
                     songList.add(new Song(zipFile, entry));
                 }
             }
-        }   catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
 
         songs = songList.toArray(new Song[0]);
     }
 
     public Song[] getSongs() {
         return songs;
+    }
+
+    public String getName() {
+        return filepath.substring(filepath.indexOf("/") + 8);
     }
 }

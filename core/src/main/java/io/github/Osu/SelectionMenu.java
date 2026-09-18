@@ -1,52 +1,50 @@
 package io.github.Osu;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class SelectionMenu {
-    private boolean active;
-    private FitViewport mainViewPort;
-    private Vector2 mouse;
-    private Beatmap[] beatmaps;
-    private int beatmapHeight = 75;
-    private int maxBeatmapWidth = 1920/3;
-    private int SongHeight = 50;
-    private int SongWidth = 1920/4;
-    private int selectionIndex = 0;
+public class SelectionMenu extends Menu {
+    private final BeatmapViewModel[] viewModels;
 
-    public SelectionMenu(FitViewport viewport) {
-        mainViewPort = viewport;
-        beatmaps = loadBeatMaps();
+    public SelectionMenu() {
+        super();
+        Beatmap[] beatmaps = loadBeatMaps();
+
+        int curHeight = 1080/2;
+        List<BeatmapViewModel> tmpViewModel = new ArrayList<>();
+        for (Beatmap beatmap : beatmaps) {
+            int beatmapHeight = 75;
+            int maxBeatmapWidth = 1920 / 3;
+            int songHeight = 35;
+            int songWidth = (int) (1920/3.3);
+            BeatmapViewModel currentModel = new BeatmapViewModel(1920 - maxBeatmapWidth, curHeight, maxBeatmapWidth, beatmapHeight, beatmap, songHeight, songWidth);
+            tmpViewModel.add(currentModel);
+            curHeight = (int) (curHeight + (currentModel.getCombinedHeight() + 5));
+        }
+        viewModels = tmpViewModel.toArray(new BeatmapViewModel[0]);
     }
 
-    public void update() {
-        if (!active) {
+    public void update(float dt) {
+        if (!isActive()) {
             return;
         }
 
-        mouse = new Vector2(
-                Gdx.input.getX(),
-                Gdx.input.getY());
-        mainViewPort.unproject(mouse);
+        super.update(dt);
+
+        for (BeatmapViewModel beatmapModel : viewModels) {
+            beatmapModel.update(dt, mouse);
+        }
     }
 
     public void draw(SpriteBatch batch) {
-        if (!active) {
+        if (!isActive()) {
             return;
         }
         batch.begin();
-        for (int i = 0; i < beatmaps.length; i++) {
-            Texture beatmapTexture = new Texture("1x1.png");
-            TextureRegion beatmapRegion = new TextureRegion(beatmapTexture);
-            batch.draw(beatmapRegion, 1920 - maxBeatmapWidth, 900, maxBeatmapWidth, beatmapHeight);
+        for (BeatmapViewModel beatmapModel : viewModels) {
+            beatmapModel.draw(batch);
         }
         batch.end();
     }
@@ -57,9 +55,5 @@ public class SelectionMenu {
         ));
 
         return beatmaps.toArray(new Beatmap[0]);
-    }
-
-    public void load() {
-        active = true;
     }
 }
