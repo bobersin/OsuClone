@@ -1,16 +1,19 @@
 package io.github.Osu;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import static io.github.Osu.Main.mainMenu;
+import static io.github.Osu.Main.beatmaps;
 
 public class SelectionMenu extends Menu {
     private final BeatmapViewModel[] viewModels;
 
     public SelectionMenu() {
         super();
-        Beatmap[] beatmaps = loadBeatMaps();
 
         int curHeight = 1080/2;
         List<BeatmapViewModel> tmpViewModel = new ArrayList<>();
@@ -23,7 +26,7 @@ public class SelectionMenu extends Menu {
             tmpViewModel.add(currentModel);
             curHeight = (int) (curHeight + (currentModel.getCombinedHeight() + 5));
         }
-        viewModels = tmpViewModel.toArray(new BeatmapViewModel[0]);
+        viewModels = tmpViewModel.toArray(BeatmapViewModel[]::new);
     }
 
     public void update(float dt) {
@@ -35,6 +38,11 @@ public class SelectionMenu extends Menu {
 
         for (BeatmapViewModel beatmapModel : viewModels) {
             beatmapModel.update(dt, mouse);
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            mainMenu.load();
+            unload();
         }
     }
 
@@ -49,11 +57,5 @@ public class SelectionMenu extends Menu {
         batch.end();
     }
 
-    public Beatmap[] loadBeatMaps() {
-        List<Beatmap> beatmaps = new ArrayList<>(List.of(
-            new Beatmap("beatmaps/320118 Reol - No title.osz")
-        ));
 
-        return beatmaps.toArray(new Beatmap[0]);
-    }
 }

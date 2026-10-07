@@ -1,10 +1,10 @@
 package io.github.Osu;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Gdx;
 
-import static io.github.Osu.Main.selectionMenu;
-import static io.github.Osu.Main.viewport;
+import static io.github.Osu.Main.*;
 
 public class MainMenu extends Menu {
     private final Button osuLogo;
@@ -17,17 +17,17 @@ public class MainMenu extends Menu {
     public MainMenu() {
         super();
 
-        int osuWidth = 500;
-        int osuHeight = 500;
+        float osuWidth = (1024 * screenScale);
+        float osuHeight = (1024 * screenScale);
 
         double clickedX = (viewport.getWorldWidth() - osuWidth)/2.5;
         double clickedY = (viewport.getWorldHeight() - osuHeight)/2;
 
-        int buttonHeight = 75;
-        int buttonWidth = osuWidth/3;
-        int buttonOffset = 75;
+        float buttonHeight = 75 * screenScale;
+        float buttonWidth = osuWidth/3;
+        float buttonOffset = 75 * screenScale;
 
-        playButton = new Button((int) (clickedX + (double) osuWidth /2) + osuWidth/3, (int) (clickedY + (double) osuHeight /2) - buttonHeight/2 + buttonOffset, buttonWidth, buttonHeight) {
+        playButton = new Button((int) ((clickedX + osuWidth /2) + osuWidth/3), (int) ((clickedY + osuHeight /2) - buttonHeight/2 + buttonOffset), (int) buttonWidth, (int) buttonHeight) {
             @Override
             public void clicked() {
                 if (!logoClicked) return;
@@ -36,7 +36,7 @@ public class MainMenu extends Menu {
             }
         };
 
-        exitButton = new Button((int) (clickedX + (double) osuWidth /2) + osuWidth/3, (int) (clickedY + (double) osuHeight /2) - buttonHeight/2 - buttonOffset, buttonWidth, buttonHeight) {
+        exitButton = new Button((int) ((clickedX + osuWidth /2) + osuWidth/3), (int) ((clickedY + osuHeight /2) - buttonHeight/2 - buttonOffset), (int) buttonWidth, (int) buttonHeight) {
             @Override
             public void clicked() {
                 if (!logoClicked) return;
@@ -44,10 +44,10 @@ public class MainMenu extends Menu {
             }
         };
 
-        osuLogo = new Button((int) ((viewport.getWorldWidth() - osuWidth)/2), (int) clickedY, osuWidth, osuHeight, "Osulogo.png") {
+        osuLogo = new Button((int) ((viewport.getWorldWidth() - osuWidth)/2), (int) clickedY, (int) osuWidth, (int) osuHeight, "Osulogo.png") {
             @Override
             public void clicked() {
-                if (!logoClicked) super.changePosition((float) ((viewport.getWorldWidth() - osuWidth)/2.5), (viewport.getWorldHeight() - osuHeight)/2);
+                if (!logoClicked) super.changePosition((float) ((viewport.getWorldWidth() - osuWidth)/3), (viewport.getWorldHeight() - osuHeight)/2);
                 logoClicked = true;
             }
         };
@@ -59,6 +59,15 @@ public class MainMenu extends Menu {
         playButton.update(dt, mouse);
         exitButton.update(dt, mouse);
         osuLogo.update(dt, mouse);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            if (logoClicked) {
+                osuLogo.changePosition(((viewport.getWorldWidth() - osuLogo.getDimensions().getWidth())/2), (viewport.getWorldHeight() - osuLogo.getDimensions().getHeight())/2);
+                logoClicked = false;
+            } else {
+                Gdx.app.exit();
+            }
+        }
     }
 
     public void draw(SpriteBatch batch) {

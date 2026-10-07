@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
+//todo make animation class
 public class Button {
     protected Rectangle dimensions;
     protected Rectangle currentdimensions;
@@ -67,6 +67,7 @@ public class Button {
 
     public void changePosition(float x,float y) {
         animationProgress = 0f;
+        animationDimensions = new Rectangle(currentdimensions);
         dimensions.setPosition(x,y);
     }
 

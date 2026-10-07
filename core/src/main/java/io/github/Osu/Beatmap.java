@@ -35,7 +35,9 @@ public class Beatmap {
         return songs;
     }
 
-    public String getName() {
+    protected String getName() {
         return filepath.substring(filepath.indexOf("/") + 8);
     }
+
+    public String getFilePath() {return filepath;}
 }
