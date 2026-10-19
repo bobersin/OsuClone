@@ -41,8 +41,8 @@ public class Main extends ApplicationAdapter {
         beatmaps = loadBeatMaps();
 
         switchSong(MathUtils.random(beatmaps.length - 1), 0);
-        screenSize = new Vector2(320, 180);
-        screenScale = (float) screenSize.x / 2560;
+        screenSize = new Vector2(1920, 1080);
+        screenScale = (float) screenSize.x / 1920;
         camera = new OrthographicCamera();
         viewport = new FitViewport( screenSize.x,  screenSize.y, camera);
         batch = new SpriteBatch();
@@ -61,6 +61,7 @@ public class Main extends ApplicationAdapter {
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         batch.setProjectionMatrix(camera.combined);
         mainMenu.draw(batch);
+        gameMenu.draw(batch);
         selectionMenu.draw(batch);
     }
 
@@ -68,6 +69,8 @@ public class Main extends ApplicationAdapter {
         float dt = Gdx.graphics.getDeltaTime();
         mainMenu.update(dt);
         selectionMenu.update(dt);
+        gameMenu.update(dt);
+        Gdx.app.log("TAG", "Update");
     }
 
     public void switchSong(int beatmapIndex, int songIndex) {
@@ -114,8 +117,7 @@ public class Main extends ApplicationAdapter {
     public Beatmap[] loadBeatMaps() {
         List<Beatmap> beatmaps = new ArrayList<>(List.of(
             new Beatmap("beatmaps/320118 Reol - No title.osz"),
-            new Beatmap("beatmaps/2592110 Janina - Terranova (Original Radio Mix) (Nightcore & Cut Ver.).osz"),
-            new Beatmap("beatmaps/147210 xi - FREEDOM DiVE.osz")
+            new Beatmap("beatmaps/2611637 Chata - Shiawase Gatari.osz")
         ));
 
         return beatmaps.toArray(new Beatmap[0]);
